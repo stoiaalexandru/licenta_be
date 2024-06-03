@@ -1,0 +1,41 @@
+{
+   "rabbit_version":"3.7.7",
+   "users":[
+      {
+         "name":"licenta",
+         "password_hash":"b78f37cc7e14b8d9612ab1b2ba16ec525f7c1c10a1d0b15f76c792b30f7f441b",
+         "hashing_algorithm":"rabbit_password_hashing_sha256",
+         "tags":"administrator"
+      }
+   ],
+   "vhosts":[
+      {
+         "name":"licenta"
+      }
+   ],
+   "permissions":[
+      {
+         "user":"licenta",
+         "vhost":"licenta",
+         "configure":".*",
+         "write":".*",
+         "read":".*"
+      }
+   ],
+   "topic_permissions":[
+
+   ],
+   "parameters":[
+
+   ],
+     "global_parameters":[
+      {
+         "name":"cluster_name",
+         "value":"rabbit@ee2b6eebdccd"
+      }
+   ],
+   "policies":[],
+   "queues":[],
+   "exchanges":[],
+   "bindings":[]
+}

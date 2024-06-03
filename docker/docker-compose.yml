@@ -1,0 +1,69 @@
+version: "3"
+services:
+  django:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: python3 manage.py runserver 0.0.0.0:8000
+    working_dir: /code_be
+    environment:
+      STORAGE_PATH_BASE: /tmp
+    tty: true
+    stdin_open: true
+    volumes:
+      - ..:/code_be
+      - shared-storage:/tmp
+    ports:
+      - 8002:8000
+    depends_on:
+      - db
+      - rabbitmq
+      - rediscache
+    restart: always
+  celery:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    working_dir: /code_be
+    command: celery -A licenta_be worker --loglevel=INFO
+    environment:
+      STORAGE_PATH_BASE: /tmp
+    tty: true
+    stdin_open: true
+    volumes:
+      - ..:/code_be
+      - shared-storage:/tmp
+    depends_on:
+      - db
+      - rabbitmq
+      - rediscache
+    restart: always
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    environment:
+      POSTGRES_USER: licenta_be
+      POSTGRES_PASSWORD: licenta_be
+      POSTRES_DB: licenta_be
+    ports:
+    - 55433:5432
+    tty: true
+    stdin_open: true
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    volumes:
+      - ./rabbit_config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    ports:
+      - 35673:15672
+      - 55673:5672
+    tty: true
+    stdin_open: true
+  rediscache:
+    image: redis:7.2.4-alpine
+    restart: always
+    command: ['redis-server', '/etc/redis/redis.conf']
+    volumes:
+      - ./redis_config/redis.conf:/etc/redis/redis.conf
+    ports:
+      - 6380:6380
+volumes:
+  shared-storage:
